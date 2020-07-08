@@ -31,6 +31,7 @@ import org.jeasy.rules.core.DefaultRulesEngine;
 import org.jeasy.rules.mvel.MVELRule;
 import org.jeasy.rules.mvel.MVELRuleFactory;
 import org.jeasy.rules.support.reader.YamlRuleDefinitionReader;
+import org.jeasy.rules.tutorials.groovy.Person;
 
 import java.io.FileReader;
 

@@ -105,19 +105,19 @@ public final class DefaultRulesEngine extends AbstractRulesEngine {
                 }
             }
             if (evaluationResult) {
-                LOGGER.debug("Rule '{}' triggered", name);
+                LOGGER.debug("Action '{}' triggered", name);
                 triggerListenersAfterEvaluate(rule, facts, true);
                 try {
                     triggerListenersBeforeExecute(rule, facts);
                     rule.execute(facts);
-                    LOGGER.debug("Rule '{}' performed successfully", name);
+                    LOGGER.debug("Rule '{}' performed action successfully", name);
                     triggerListenersOnSuccess(rule, facts);
                     if (parameters.isSkipOnFirstAppliedRule()) {
                         LOGGER.debug("Next rules will be skipped since parameter skipOnFirstAppliedRule is set");
                         break;
                     }
                 } catch (Exception exception) {
-                    LOGGER.error("Rule '" + name + "' performed with error", exception);
+                    LOGGER.error("Rule '" + name + "' performed action with error", exception);
                     triggerListenersOnFailure(rule, exception, facts);
                     if (parameters.isSkipOnFirstFailedRule()) {
                         LOGGER.debug("Next rules will be skipped since parameter skipOnFirstFailedRule is set");
@@ -125,7 +125,7 @@ public final class DefaultRulesEngine extends AbstractRulesEngine {
                     }
                 }
             } else {
-                LOGGER.debug("Rule '{}' has been evaluated to false, it has not been executed", name);
+                LOGGER.debug("Rule '{}' has been evaluated to false, action will not been executed", name);
                 triggerListenersAfterEvaluate(rule, facts, false);
                 if (parameters.isSkipOnFirstNonTriggeredRule()) {
                     LOGGER.debug("Next rules will be skipped since parameter skipOnFirstNonTriggeredRule is set");

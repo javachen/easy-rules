@@ -21,41 +21,39 @@
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
  */
-package org.jeasy.rules.tutorials.shop;
+package org.jeasy.rules.tutorials.groovy;
 
-public class Person {
+import org.jeasy.rules.api.Facts;
+import org.jeasy.rules.api.Rules;
+import org.jeasy.rules.api.RulesEngine;
+import org.jeasy.rules.core.DefaultRulesEngine;
+import org.jeasy.rules.groovy.GroovyRule;
 
-    private String name;
-    private int age;
-    private boolean adult;
+import java.util.HashMap;
+import java.util.Map;
 
-    public Person(String name, int age) {
-        this.name = name;
-        this.age = age;
+public class Launcher {
+
+    public static void main(String[] args) {
+        Facts facts = new Facts();
+        Map<String, Object> person = new HashMap<>();
+        person.put("name", "foo");
+        person.put("age1", 14);
+        facts.put("person", person);
+
+        // define rules
+        GroovyRule groovyRule = new GroovyRule().name("age rule")
+                .description("Check if person's age is > 18 and mark the person as adult")
+                .priority(1)
+                .when("person.get('age') > 18")
+                .then("person.put('audit',true);");
+
+        Rules rules = new Rules();
+        rules.register(groovyRule);
+
+        // fire rules on known facts
+        RulesEngine rulesEngine = new DefaultRulesEngine();
+        rulesEngine.fire(rules, facts);
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public boolean isAdult() {
-        return adult;
-    }
-
-    public void setAdult(boolean adult) {
-        this.adult = adult;
-    }
-
-    @Override
-    public String toString() {
-        return "Person{" +
-                "name='" + name + '\'' +
-                ", age=" + age +
-                ", adult=" + adult +
-                '}';
-    }
 }

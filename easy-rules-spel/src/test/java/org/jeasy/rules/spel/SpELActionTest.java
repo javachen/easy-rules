@@ -31,6 +31,9 @@ import org.junit.contrib.java.lang.system.SystemOutRule;
 import org.springframework.expression.ParserContext;
 import org.springframework.expression.common.TemplateParserContext;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -42,16 +45,20 @@ public class SpELActionTest {
     @Test
     public void testSpELActionExecution() throws Exception {
         // given
-        Action markAsAdult = new SpELAction("#{ ['person'].setAdult(true) }");
+        Action markAsAdult = new SpELAction("#{ ['person'].put(\"audit\",true) }");
         Facts facts = new Facts();
         Person foo = new Person("foo", 20);
-        facts.put("person", foo);
+        Map<String, Object> map = new HashMap<>();
+        map.put("name", "foot");
+        map.put("age", 20);
+        map.put("audit", false);
+        facts.put("person", map);
 
         // when
         markAsAdult.execute(facts);
 
         // then
-        assertThat(foo.isAdult()).isTrue();
+        assertThat(Boolean.valueOf(map.get("audit").toString())).isTrue();
     }
 
     @Test

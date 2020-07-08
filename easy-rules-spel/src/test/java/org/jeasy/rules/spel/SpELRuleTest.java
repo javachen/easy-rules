@@ -27,6 +27,9 @@ import org.jeasy.rules.api.Facts;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SpELRuleTest {
@@ -38,15 +41,21 @@ public class SpELRuleTest {
     public void setUp() {
         facts = new Facts();
         spelRule = new SpELRule().name("spel rule").description("rule using SpEL").priority(1)
-                .when("#{ ['person'].age > 18 }")
-                .then("#{ ['person'].setAdult(true) }");
+                .when("#{ ['data'].get('person').get('age') > 18 }")
+                .then("#{ ['data'].put('audit',true) }");
     }
 
     @Test
     public void whenTheRuleIsTriggered_thenConditionShouldBeEvaluated() {
         // given
-        Person person = new Person("foo", 20);
-        facts.put("person", person);
+        Map<String, Object> person = new HashMap<>();
+        person.put("name", "foo");
+        person.put("age", 20);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("person", person);
+        map.put("audit", false);
+        facts.put("data", map);
 
         // when
         boolean evaluationResult = spelRule.evaluate(facts);
