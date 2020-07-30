@@ -40,6 +40,7 @@ public class RuleBuilder {
     private String name = Rule.DEFAULT_NAME;
     private String description = Rule.DEFAULT_DESCRIPTION;
     private int priority = Rule.DEFAULT_PRIORITY;
+    private double threshold = Rule.DEFAULT_THRESHOLD;
 
     private Condition condition = Condition.FALSE;
     private final List<Action> actions = new ArrayList<>();
@@ -76,6 +77,18 @@ public class RuleBuilder {
         this.priority = priority;
         return this;
     }
+
+    /**
+     * Set rule threshold.
+     *
+     * @param threshold of the rule
+     * @return the builder instance
+     */
+    public RuleBuilder threshold(double threshold) {
+        this.threshold = threshold;
+        return this;
+    }
+
 
     /**
      * Set rule condition.

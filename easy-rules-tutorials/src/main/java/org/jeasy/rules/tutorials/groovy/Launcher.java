@@ -26,6 +26,7 @@ package org.jeasy.rules.tutorials.groovy;
 import org.jeasy.rules.api.Facts;
 import org.jeasy.rules.api.Rules;
 import org.jeasy.rules.api.RulesEngine;
+import org.jeasy.rules.api.RulesEngineParameters;
 import org.jeasy.rules.core.DefaultRulesEngine;
 import org.jeasy.rules.groovy.GroovyRule;
 
@@ -36,23 +37,46 @@ public class Launcher {
 
     public static void main(String[] args) {
         Facts facts = new Facts();
-        Map<String, Object> person = new HashMap<>();
-        person.put("name", "foo");
-        person.put("age1", 14);
-        facts.put("person", person);
+        Map<String, Object> event = new HashMap<>();
+        event.put("RemoveCount", 12);
+        event.put("SkuCount", 30);
+        event.put("TotalPrice", 8);
+        event.put("GoodsCount", 24);
+        event.put("NoScanCount", 41);
+        facts.put("event", event);
 
         // define rules
-        GroovyRule groovyRule = new GroovyRule().name("age rule")
-                .description("Check if person's age is > 18 and mark the person as adult")
+        GroovyRule groovyRule1 = new GroovyRule().name("rule1")
                 .priority(1)
-                .when("person.get('age') > 18")
-                .then("person.put('audit',true);");
+                .threshold(0.95)
+                .when("event.get('RemoveCount') > 2");
+
+        GroovyRule groovyRule2 = new GroovyRule().name("rule2")
+                .priority(2)
+                .threshold(0.5)
+                .when("event.get('SkuCount') >=4 && event.get('TotalPrice')<10");
+
+        GroovyRule groovyRule3 = new GroovyRule().name("rule3")
+                .priority(3)
+                .threshold(0.2)
+                .when("event.get('GoodsCount') <=2 || event.get('GoodsCount') > 20");
+
+        GroovyRule groovyRule4 = new GroovyRule().name("rule4")
+                .priority(4)
+                .when("event.get('NoScanCount') >=2");
 
         Rules rules = new Rules();
-        rules.register(groovyRule);
+        rules.register(groovyRule1);
+        rules.register(groovyRule2);
+        rules.register(groovyRule3);
+        rules.register(groovyRule4);
 
         // fire rules on known facts
-        RulesEngine rulesEngine = new DefaultRulesEngine();
+        RulesEngineParameters parameters = new RulesEngineParameters().skipOnFirstAppliedRule(true).skipOnFirstNonTriggeredRule(true);
+        RulesEngine rulesEngine = new DefaultRulesEngine(parameters);
+
+//        rulesEngine.check(rules, facts);
+
         rulesEngine.fire(rules, facts);
     }
 

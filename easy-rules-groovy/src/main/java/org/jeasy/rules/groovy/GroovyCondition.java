@@ -23,22 +23,20 @@
  */
 package org.jeasy.rules.groovy;
 
-import java.io.Serializable;
+import lombok.extern.slf4j.Slf4j;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.jeasy.rules.api.Condition;
 import org.jeasy.rules.api.Facts;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.io.Serializable;
 
 /**
  * This class is an implementation of {@link Condition} that uses <a href="https://github.com/apache/groovy">Groovy</a> to evaluate the condition.
  *
  * @author Medina Computama <medina.computama@gmail.com>
  */
+@Slf4j
 public class GroovyCondition implements Condition {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(GroovyCondition.class);
-
     private String expression;
     private Serializable compiledExpression;
 
@@ -65,12 +63,6 @@ public class GroovyCondition implements Condition {
 
     @Override
     public boolean evaluate(Facts facts) {
-        try {
-            return (boolean) Groovy.executeExpression(compiledExpression, facts.asMap());
-        } catch (Exception e) {
-            LOGGER.error("Unable to evaluate expression: '" + expression + "' on facts: " + facts, e);
-            return false;
-        }
+        return (boolean) Groovy.executeExpression(compiledExpression, facts.asMap());
     }
-    
 }

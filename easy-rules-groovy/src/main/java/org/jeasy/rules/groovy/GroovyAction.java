@@ -23,22 +23,20 @@
  */
 package org.jeasy.rules.groovy;
 
-import java.io.Serializable;
+import lombok.extern.slf4j.Slf4j;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.jeasy.rules.api.Action;
 import org.jeasy.rules.api.Facts;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.io.Serializable;
 
 /**
  * This class is an implementation of {@link Action} that uses <a href="https://github.com/apache/groovy">Groovy</a> to execute the action.
  *
  * @author Medina Computama <medina.computama@gmail.com>
  */
+@Slf4j
 public class GroovyAction implements Action {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(GroovyAction.class);
-
     private String expression;
     private Serializable compiledExpression;
 
@@ -55,7 +53,7 @@ public class GroovyAction implements Action {
     /**
      * Create a new {@link GroovyAction}.
      *
-     * @param expression the action written in expression language
+     * @param expression    the action written in expression language
      * @param parserContext the Groovy parser context
      */
     public GroovyAction(String expression, CompilerConfiguration parserContext) {
@@ -68,9 +66,9 @@ public class GroovyAction implements Action {
         try {
             Groovy.executeExpression(compiledExpression, facts.asMap());
         } catch (Exception e) {
-            LOGGER.error("Unable to evaluate expression: '" + expression + "' on facts: " + facts, e);
+            log.error("Unable to evaluate expression: '" + expression + "' on facts: " + facts, e);
             throw e;
         }
     }
-    
+
 }

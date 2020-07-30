@@ -23,13 +23,12 @@
  */
 package org.jeasy.rules.support;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jeasy.rules.api.Rule;
 import org.jeasy.rules.support.composite.ActivationRuleGroup;
 import org.jeasy.rules.support.composite.CompositeRule;
 import org.jeasy.rules.support.composite.ConditionalRuleGroup;
 import org.jeasy.rules.support.composite.UnitRuleGroup;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -39,10 +38,8 @@ import java.util.List;
  *
  * @author Mahmoud Ben Hassine (mahmoud.benhassine@icloud.com)
  */
+@Slf4j
 public abstract class AbstractRuleFactory {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractRuleFactory.class);
-
     private static final List<String> ALLOWED_COMPOSITE_RULE_TYPES = Arrays.asList(
             UnitRuleGroup.class.getSimpleName(),
             ConditionalRuleGroup.class.getSimpleName(),
@@ -61,14 +58,14 @@ public abstract class AbstractRuleFactory {
 
     protected Rule createCompositeRule(RuleDefinition ruleDefinition) {
         if (ruleDefinition.getCondition() != null) {
-            LOGGER.warn(
+            log.warn(
                     "Condition '{}' in composite rule '{}' of type {} will be ignored.",
                     ruleDefinition.getCondition(),
                     ruleDefinition.getName(),
                     ruleDefinition.getCompositeRuleType());
         }
         if (ruleDefinition.getActions() != null && !ruleDefinition.getActions().isEmpty()) {
-            LOGGER.warn(
+            log.warn(
                     "Actions '{}' in composite rule '{}' of type {} will be ignored.",
                     ruleDefinition.getActions(),
                     ruleDefinition.getName(),
@@ -91,6 +88,7 @@ public abstract class AbstractRuleFactory {
         }
         compositeRule.setDescription(ruleDefinition.getDescription());
         compositeRule.setPriority(ruleDefinition.getPriority());
+        compositeRule.setThreshold(ruleDefinition.getThreshold());
 
         for (RuleDefinition composingRuleDefinition : ruleDefinition.getComposingRules()) {
             compositeRule.addRule(createRule(composingRuleDefinition));

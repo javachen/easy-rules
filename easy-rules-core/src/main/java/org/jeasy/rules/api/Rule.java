@@ -25,7 +25,7 @@ package org.jeasy.rules.api;
 
 /**
  * Abstraction for a rule that can be fired by a rules engine.
- *
+ * <p>
  * Rules are registered in a namespace of rule of type {@link Rules}
  * in which they must have a <strong>unique</strong> name.
  *
@@ -49,7 +49,13 @@ public interface Rule extends Comparable<Rule> {
     int DEFAULT_PRIORITY = Integer.MAX_VALUE - 1;
 
     /**
+     * Default rule priority.
+     */
+    double DEFAULT_THRESHOLD = 1d;
+
+    /**
      * Getter for rule name.
+     *
      * @return the rule name
      */
     default String getName() {
@@ -58,6 +64,7 @@ public interface Rule extends Comparable<Rule> {
 
     /**
      * Getter for rule description.
+     *
      * @return rule description
      */
     default String getDescription() {
@@ -66,10 +73,20 @@ public interface Rule extends Comparable<Rule> {
 
     /**
      * Getter for rule priority.
+     *
      * @return rule priority
      */
     default int getPriority() {
         return DEFAULT_PRIORITY;
+    }
+
+    /**
+     * Getter for rule threshol.
+     *
+     * @return rule threshol
+     */
+    default double getThreshold() {
+        return DEFAULT_THRESHOLD;
     }
 
     /**
@@ -82,6 +99,7 @@ public interface Rule extends Comparable<Rule> {
 
     /**
      * This method implements the rule's action(s).
+     *
      * @throws Exception thrown if an exception occurs when performing action(s)
      */
     void execute(Facts facts) throws Exception;

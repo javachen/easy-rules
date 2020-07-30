@@ -59,7 +59,7 @@ public class MVELRuleFactory extends AbstractRuleFactory {
     /**
      * Create a new {@link MVELRuleFactory} with a given reader.
      *
-     * @param reader used to read rule definitions
+     * @param reader        used to read rule definitions
      * @param parserContext used to parse condition/action expressions
      * @see YamlRuleDefinitionReader
      * @see JsonRuleDefinitionReader
@@ -71,7 +71,7 @@ public class MVELRuleFactory extends AbstractRuleFactory {
 
     /**
      * Create a new {@link MVELRule} from a Reader.
-     *
+     * <p>
      * The rule descriptor should contain a single rule definition.
      * If no rule definitions are found, a {@link IllegalArgumentException} will be thrown.
      * If more than a rule is defined in the descriptor, the first rule will be returned.
@@ -109,6 +109,7 @@ public class MVELRuleFactory extends AbstractRuleFactory {
                 .name(ruleDefinition.getName())
                 .description(ruleDefinition.getDescription())
                 .priority(ruleDefinition.getPriority())
+                .threshold(ruleDefinition.getThreshold())
                 .when(ruleDefinition.getCondition());
         for (String action : ruleDefinition.getActions()) {
             mvelRule.then(action);

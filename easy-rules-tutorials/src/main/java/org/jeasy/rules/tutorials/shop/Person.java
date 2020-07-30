@@ -21,54 +21,41 @@
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
  */
-package org.jeasy.rules.api;
+package org.jeasy.rules.tutorials.shop;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+public class Person {
 
-/**
- * Rules engine interface.
- *
- * @author Mahmoud Ben Hassine (mahmoud.benhassine@icloud.com)
- */
-public interface RulesEngine {
+    private String name;
+    private int age;
+    private boolean adult;
 
-    /**
-     * Return the rules engine parameters.
-     *
-     * @return The rules engine parameters
-     */
-    RulesEngineParameters getParameters();
-
-    /**
-     * Return the list of registered rule listeners.
-     *
-     * @return the list of registered rule listeners
-     */
-    default List<RuleListener> getRuleListeners() {
-        return Collections.emptyList();
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
     }
 
-    /**
-     * Return the list of registered rules engine listeners.
-     *
-     * @return the list of registered rules engine listeners
-     */
-    default List<RulesEngineListener> getRulesEngineListeners() {
-        return Collections.emptyList();
+    public String getName() {
+        return name;
     }
 
-    /**
-     * Fire all registered rules on given facts.
-     */
-    Boolean fire(Rules rules, Facts facts);
+    public int getAge() {
+        return age;
+    }
 
-    /**
-     * Check rules without firing them.
-     * @return a map with the result of evaluation of each rule
-     */
-    default Map<Rule, Boolean> check(Rules rules, Facts facts) {
-        return Collections.emptyMap();
+    public boolean isAdult() {
+        return adult;
+    }
+
+    public void setAdult(boolean adult) {
+        this.adult = adult;
+    }
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                ", adult=" + adult +
+                '}';
     }
 }

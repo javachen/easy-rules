@@ -23,10 +23,7 @@
  */
 package org.jeasy.rules.core;
 
-import org.jeasy.rules.annotation.Action;
-import org.jeasy.rules.annotation.Condition;
-import org.jeasy.rules.annotation.Fact;
-import org.jeasy.rules.annotation.Priority;
+import org.jeasy.rules.annotation.*;
 import org.jeasy.rules.api.Facts;
 import org.jeasy.rules.api.Rule;
 import org.slf4j.Logger;
@@ -37,12 +34,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 import static java.lang.String.format;
 
@@ -57,6 +49,7 @@ public class RuleProxy implements InvocationHandler {
     private String name;
     private String description;
     private Integer priority;
+    private Double threshold;
     private Method[] methods;
     private Method conditionMethod;
     private Set<ActionMethodOrderBean> actionMethods;
@@ -101,6 +94,8 @@ public class RuleProxy implements InvocationHandler {
                 return getRuleDescription();
             case "getPriority":
                 return getRulePriority();
+            case "getThreshold":
+                return getRuleThreshold();
             case "compareTo":
                 return compareToMethod(args);
             case "evaluate":
@@ -187,22 +182,30 @@ public class RuleProxy implements InvocationHandler {
         if (priority != otherPriority) {
             return false;
         }
+
+        double otherThreshold = otherRule.getThreshold();
+        double threshold = getRuleThreshold();
+        if (threshold != otherThreshold) {
+            return false;
+        }
+
         String otherName = otherRule.getName();
         String name = getRuleName();
         if (!name.equals(otherName)) {
             return false;
         }
         String otherDescription = otherRule.getDescription();
-        String description =  getRuleDescription();
+        String description = getRuleDescription();
         return Objects.equals(description, otherDescription);
     }
 
     private int hashCodeMethod() throws Exception {
-        int result   = getRuleName().hashCode();
+        int result = getRuleName().hashCode();
         int priority = getRulePriority();
         String description = getRuleDescription();
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + priority;
+        result = 31 * result + threshold.hashCode();
         return result;
     }
 
@@ -240,6 +243,27 @@ public class RuleProxy implements InvocationHandler {
             String name = getRuleName();
             return name.compareTo(otherName);
         }
+    }
+
+    private double getRuleThreshold() throws Exception {
+        if (this.threshold == null) {
+            double threshold = Rule.DEFAULT_THRESHOLD;
+
+            org.jeasy.rules.annotation.Rule rule = getRuleAnnotation();
+            if (rule.threshold() != Rule.DEFAULT_THRESHOLD) {
+                threshold = rule.threshold();
+            }
+
+            Method[] methods = getMethods();
+            for (Method method : methods) {
+                if (method.isAnnotationPresent(Threshold.class)) {
+                    threshold = (int) method.invoke(target);
+                    break;
+                }
+            }
+            this.threshold = threshold;
+        }
+        return this.threshold;
     }
 
     private int getRulePriority() throws Exception {
@@ -356,7 +380,7 @@ public class RuleProxy implements InvocationHandler {
             }
         }
     }
-    
+
     public Object getTarget() {
         return target;
     }

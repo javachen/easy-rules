@@ -29,7 +29,7 @@ import org.jeasy.rules.api.Rule;
 import java.util.TreeSet;
 
 /**
- * An activation rule group is a composite rule that fires the first applicable 
+ * An activation rule group is a composite rule that fires the first applicable
  * rule and ignores other rules in the group (XOR logic).
  * Rules are first sorted by their natural order (priority by default) within the group.
  *
@@ -76,6 +76,19 @@ public class ActivationRuleGroup extends CompositeRule {
      */
     public ActivationRuleGroup(String name, String description, int priority) {
         super(name, description, priority);
+        rules = new TreeSet<>(rules);
+    }
+
+    /**
+     * Create an activation rule group.
+     *
+     * @param name        of the activation rule group
+     * @param description of the activation rule group
+     * @param priority    of the activation rule group
+     * @param threshold   of the activation rule group
+     */
+    public ActivationRuleGroup(String name, String description, int priority, final double threshold) {
+        super(name, description, priority, threshold);
         rules = new TreeSet<>(rules);
     }
 

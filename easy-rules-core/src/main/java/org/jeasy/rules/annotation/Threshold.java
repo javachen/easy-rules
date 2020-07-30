@@ -21,54 +21,19 @@
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
  */
-package org.jeasy.rules.api;
+package org.jeasy.rules.annotation;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.lang.annotation.*;
 
 /**
- * Rules engine interface.
+ * Annotation to mark the method to execute to get rule threshold.
+ * Must annotate any public method with no arguments and that returns an integer value.
  *
  * @author Mahmoud Ben Hassine (mahmoud.benhassine@icloud.com)
  */
-public interface RulesEngine {
+@Inherited
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface Threshold {
 
-    /**
-     * Return the rules engine parameters.
-     *
-     * @return The rules engine parameters
-     */
-    RulesEngineParameters getParameters();
-
-    /**
-     * Return the list of registered rule listeners.
-     *
-     * @return the list of registered rule listeners
-     */
-    default List<RuleListener> getRuleListeners() {
-        return Collections.emptyList();
-    }
-
-    /**
-     * Return the list of registered rules engine listeners.
-     *
-     * @return the list of registered rules engine listeners
-     */
-    default List<RulesEngineListener> getRulesEngineListeners() {
-        return Collections.emptyList();
-    }
-
-    /**
-     * Fire all registered rules on given facts.
-     */
-    Boolean fire(Rules rules, Facts facts);
-
-    /**
-     * Check rules without firing them.
-     * @return a map with the result of evaluation of each rule
-     */
-    default Map<Rule, Boolean> check(Rules rules, Facts facts) {
-        return Collections.emptyMap();
-    }
 }

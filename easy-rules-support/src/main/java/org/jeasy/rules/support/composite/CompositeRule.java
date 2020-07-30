@@ -50,7 +50,7 @@ public abstract class CompositeRule extends BasicRule {
      * Create a new {@link CompositeRule}.
      */
     public CompositeRule() {
-        this(Rule.DEFAULT_NAME, Rule.DEFAULT_DESCRIPTION, Rule.DEFAULT_PRIORITY);
+        this(Rule.DEFAULT_NAME, Rule.DEFAULT_DESCRIPTION, Rule.DEFAULT_PRIORITY, Rule.DEFAULT_THRESHOLD);
     }
 
     /**
@@ -59,28 +59,39 @@ public abstract class CompositeRule extends BasicRule {
      * @param name rule name
      */
     public CompositeRule(final String name) {
-        this(name, Rule.DEFAULT_DESCRIPTION, Rule.DEFAULT_PRIORITY);
+        this(name, Rule.DEFAULT_DESCRIPTION, Rule.DEFAULT_PRIORITY, Rule.DEFAULT_THRESHOLD);
     }
 
     /**
      * Create a new {@link CompositeRule}.
      *
-     * @param name rule name
+     * @param name        rule name
      * @param description rule description
      */
     public CompositeRule(final String name, final String description) {
-        this(name, description, Rule.DEFAULT_PRIORITY);
+        this(name, description, Rule.DEFAULT_PRIORITY, Rule.DEFAULT_THRESHOLD);
     }
 
     /**
      * Create a new {@link CompositeRule}.
      *
-     * @param name rule name
+     * @param name        rule name
      * @param description rule description
-     * @param priority rule priority
      */
     public CompositeRule(final String name, final String description, final int priority) {
-        super(name, description, priority);
+        this(name, description, priority, Rule.DEFAULT_THRESHOLD);
+    }
+
+
+    /**
+     * Create a new {@link CompositeRule}.
+     *
+     * @param name        rule name
+     * @param description rule description
+     * @param priority    rule priority
+     */
+    public CompositeRule(final String name, final String description, final int priority, final double threshold) {
+        super(name, description, priority, threshold);
         rules = new TreeSet<>();
         proxyRules = new HashMap<>();
     }
@@ -93,6 +104,7 @@ public abstract class CompositeRule extends BasicRule {
 
     /**
      * Add a rule to the composite rule.
+     *
      * @param rule the rule to add
      */
     public void addRule(final Object rule) {
@@ -103,6 +115,7 @@ public abstract class CompositeRule extends BasicRule {
 
     /**
      * Remove a rule from the composite rule.
+     *
      * @param rule the rule to remove
      */
     public void removeRule(final Object rule) {

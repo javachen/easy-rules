@@ -26,14 +26,10 @@ package org.jeasy.rules.support.composite;
 import org.jeasy.rules.api.Facts;
 import org.jeasy.rules.api.Rule;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.TreeSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
- * A conditional rule group is a composite rule where the rule with the highest 
+ * A conditional rule group is a composite rule where the rule with the highest
  * priority acts as a condition: if the rule with the highest priority evaluates
  * to true, then we try to evaluate the rest of the rules and execute the ones
  * that evaluate to true.
@@ -82,9 +78,21 @@ public class ConditionalRuleGroup extends CompositeRule {
     }
 
     /**
+     * Create a conditional rule group.
+     *
+     * @param name        of the conditional rule
+     * @param description of the conditional rule
+     * @param priority    of the composite rule
+     * @param threshold   of the composite rule
+     */
+    public ConditionalRuleGroup(String name, String description, int priority, final double threshold) {
+        super(name, description, priority, threshold);
+    }
+
+    /**
      * A conditional rule group will trigger all its composing rules if the condition
      * of the rule with highest priority evaluates to true.
-     * 
+     *
      * @param facts The facts.
      * @return true if the conditions of all composing rules evaluate to true
      */
@@ -105,11 +113,10 @@ public class ConditionalRuleGroup extends CompositeRule {
 
     /**
      * When a conditional rule group is executed, all rules that evaluated to true
-     * are performed in their natural order, but with the conditional rule 
+     * are performed in their natural order, but with the conditional rule
      * (the one with the highest priority) first.
      *
      * @param facts The facts.
-     *
      * @throws Exception thrown if an exception occurs during actions performing
      */
     @Override
@@ -125,7 +132,7 @@ public class ConditionalRuleGroup extends CompositeRule {
         // make sure we only have one rule with the highest priority
         Rule highest = copy.get(0);
         if (copy.size() > 1 && copy.get(1).getPriority() == highest.getPriority()) {
-           throw new IllegalArgumentException("Only one rule can have highest priority");
+            throw new IllegalArgumentException("Only one rule can have highest priority");
         }
         return highest;
     }

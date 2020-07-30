@@ -23,14 +23,14 @@
  */
 package org.jeasy.rules.core;
 
-import java.util.Objects;
-
 import org.jeasy.rules.api.Facts;
 import org.jeasy.rules.api.Rule;
 
+import java.util.Objects;
+
 /**
  * Basic rule implementation class that provides common methods.
- *
+ * <p>
  * You can extend this class and override {@link BasicRule#evaluate(Facts)} and {@link BasicRule#execute(Facts)} to provide rule
  * conditions and actions logic.
  *
@@ -54,10 +54,17 @@ public class BasicRule implements Rule {
     protected int priority;
 
     /**
+     * Rule threshold.
+     */
+    protected double threshold;
+
+    protected String expression;
+
+    /**
      * Create a new {@link BasicRule}.
      */
     public BasicRule() {
-        this(Rule.DEFAULT_NAME, Rule.DEFAULT_DESCRIPTION, Rule.DEFAULT_PRIORITY);
+        this(Rule.DEFAULT_NAME, Rule.DEFAULT_DESCRIPTION, Rule.DEFAULT_PRIORITY, Rule.DEFAULT_THRESHOLD);
     }
 
     /**
@@ -66,30 +73,43 @@ public class BasicRule implements Rule {
      * @param name rule name
      */
     public BasicRule(final String name) {
-        this(name, Rule.DEFAULT_DESCRIPTION, Rule.DEFAULT_PRIORITY);
+        this(name, Rule.DEFAULT_DESCRIPTION, Rule.DEFAULT_PRIORITY, Rule.DEFAULT_THRESHOLD);
     }
 
     /**
      * Create a new {@link BasicRule}.
      *
-     * @param name rule name
+     * @param name        rule name
      * @param description rule description
      */
     public BasicRule(final String name, final String description) {
-        this(name, description, Rule.DEFAULT_PRIORITY);
+        this(name, description, Rule.DEFAULT_PRIORITY, Rule.DEFAULT_THRESHOLD);
     }
 
     /**
      * Create a new {@link BasicRule}.
      *
-     * @param name rule name
+     * @param name        rule name
      * @param description rule description
-     * @param priority rule priority
+     * @param priority    rule priority
      */
     public BasicRule(final String name, final String description, final int priority) {
+        this(name, description, priority, Rule.DEFAULT_THRESHOLD);
+    }
+
+    /**
+     * Create a new {@link BasicRule}.
+     *
+     * @param name        rule name
+     * @param description rule description
+     * @param priority    rule priority
+     * @param threshold   rule threshold
+     */
+    public BasicRule(final String name, final String description, final int priority, final double threshold) {
         this.name = name;
         this.description = description;
         this.priority = priority;
+        this.threshold = threshold;
     }
 
     /**
@@ -126,6 +146,17 @@ public class BasicRule implements Rule {
         this.priority = priority;
     }
 
+    public double getThreshold() {
+        return threshold;
+    }
+
+    public void setThreshold(double threshold) {
+        this.threshold = threshold;
+    }
+
+    public String getExpression() {
+        return expression;
+    }
     /*
      * Rules are unique according to their names within a rules engine registry.
      */
@@ -141,10 +172,13 @@ public class BasicRule implements Rule {
 
         if (priority != basicRule.priority)
             return false;
+        if (threshold != basicRule.threshold)
+            return false;
         if (!name.equals(basicRule.name))
             return false;
+        if (!expression.equals(basicRule.expression))
+            return false;
         return Objects.equals(description, basicRule.description);
-
     }
 
     @Override
@@ -152,6 +186,8 @@ public class BasicRule implements Rule {
         int result = name.hashCode();
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + priority;
+        result = 31 * result + new Double(threshold).hashCode();
+        result = 31 * result + expression.hashCode();
         return result;
     }
 
@@ -170,5 +206,4 @@ public class BasicRule implements Rule {
             return getName().compareTo(rule.getName());
         }
     }
-
 }

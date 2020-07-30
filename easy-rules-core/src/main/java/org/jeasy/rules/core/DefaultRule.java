@@ -40,6 +40,12 @@ class DefaultRule extends BasicRule {
         this.actions = actions;
     }
 
+    DefaultRule(String name, String description, int priority, double threshold, Condition condition, List<Action> actions) {
+        super(name, description, priority, threshold);
+        this.condition = condition;
+        this.actions = actions;
+    }
+
     @Override
     public boolean evaluate(Facts facts) {
         return condition.evaluate(facts);

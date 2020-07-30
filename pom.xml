@@ -27,7 +27,7 @@
 
     <name>Easy Rules</name>
     <description>Easy Rules is a simple, stupid rules engine for Java</description>
-    <url>http://www.github.com/j-easy/easy-rules</url>
+    <url>http://www.github.com/javachen/easy-rules</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -36,6 +36,7 @@
         <assertj.version>3.16.0</assertj.version>
         <mockito.version>3.3.3</mockito.version>
         <system-rules.version>1.19.0</system-rules.version>
+        <logback.version>1.2.3</logback.version>
         <slf4j.version>1.7.30</slf4j.version>
         <jackson.version>2.11.0</jackson.version>
         <maven-cobertura-plugin.version>2.7</maven-cobertura-plugin.version>
@@ -49,20 +50,20 @@
     </properties>
 
     <scm>
-        <url>git@github.com:j-easy/easy-rules.git</url>
-        <connection>scm:git:git@github.com:j-easy/easy-rules.git</connection>
-        <developerConnection>scm:git:git@github.com:j-easy/easy-rules.git</developerConnection>
+        <url>git@github.com:javachen/easy-rules.git</url>
+        <connection>scm:git:git@github.com:javachen/easy-rules.git</connection>
+        <developerConnection>scm:git:git@github.com:javachen/easy-rules.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
     <issueManagement>
         <system>GitHub</system>
-        <url>https://github.com/j-easy/easy-rules/issues</url>
+        <url>https://github.com/javachen/easy-rules/issues</url>
     </issueManagement>
 
     <ciManagement>
         <system>Github Actions</system>
-        <url>https://github.com/j-easy/easy-rules/actions</url>
+        <url>https://github.com/javachen/easy-rules/actions</url>
     </ciManagement>
 
     <developers>
@@ -71,6 +72,15 @@
             <name>Mahmoud Ben Hassine</name>
             <url>http://benas.github.io</url>
             <email>mahmoud.benhassine@icloud.com</email>
+            <roles>
+                <role>Lead developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>javachen</id>
+            <name>Java Chen</name>
+            <url>http://javachen.github.io</url>
+            <email>czj.june@gmail.com</email>
             <roles>
                 <role>Lead developer</role>
             </roles>
@@ -88,20 +98,21 @@
         <dependencies>
             <dependency>
                 <groupId>org.easyrules</groupId>
-                <artifactId>easyrules-core</artifactId>
+                <artifactId>easy-rules-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${slf4j.version}</version>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-simple</artifactId>
-                <version>${slf4j.version}</version>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.12</version>
+                <scope>provided</scope>
             </dependency>
 
             <dependency>
@@ -127,6 +138,14 @@
         </dependencies>
     </dependencyManagement>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
     <build>
         <pluginManagement>
             <plugins>
@@ -140,12 +159,10 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${maven-compiler-plugin.version}</version>
                     <configuration>
-                        <verbose>true</verbose>
                         <source>${java.version}</source>
                         <target>${java.version}</target>
-                        <showWarnings>true</showWarnings>
+                        <showWarnings>false</showWarnings>
                         <compilerArgs>
-                            <arg>-verbose</arg>
                             <arg>-Xlint:unchecked</arg>
                         </compilerArgs>
                     </configuration>
@@ -155,29 +172,26 @@
                     <artifactId>coveralls-maven-plugin</artifactId>
                     <version>${maven-coveralls-plugin.version}</version>
                 </plugin>
+                <!-- 测试用例插件 -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${maven-surefire-plugin.version}</version>
                     <configuration>
+                        <!-- 设置默认跳过测试 -->
+                        <skip>true</skip>
                         <includes>
                             <include>**/*Test*.java</include>
                         </includes>
+                        <excludes>
+                            <exclude>**/Abstract*.java</exclude>
+                        </excludes>
+                        <systemPropertyVariables>
+                            <java.security.egd>file:/dev/./urandom</java.security.egd>
+                            <java.awt.headless>true</java.awt.headless>
+                        </systemPropertyVariables>
                         <reportFormat>html</reportFormat>
                     </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>${maven-javadoc-plugin.version}</version>
-                    <executions>
-                        <execution>
-                            <phase>install</phase>
-                            <goals>
-                                <goal>javadoc</goal>
-                            </goals>
-                        </execution>
-                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>com.mycila</groupId>
@@ -207,6 +221,29 @@
             </plugins>
         </pluginManagement>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven-javadoc-plugin.version}</version>
+                <configuration>
+                    <windowtitle>${project.name} ${project.version} JavaDocs</windowtitle>
+                    <charset>UTF8</charset>
+                    <encoding>UTF8</encoding>
+                    <docencoding>UTF8</docencoding>
+                    <additionalOptions>
+                        <additionalOption>-Xdoclint:none</additionalOption>
+                    </additionalOptions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>

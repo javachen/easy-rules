@@ -23,11 +23,7 @@
  */
 package org.jeasy.rules.annotation;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * Annotation to mark a class as a rule.
@@ -41,20 +37,30 @@ public @interface Rule {
 
     /**
      * The rule name which must be unique within a rules registry.
+     *
      * @return The rule name
      */
     String name() default org.jeasy.rules.api.Rule.DEFAULT_NAME;
 
     /**
      * The rule description.
+     *
      * @return The rule description
      */
-    String description() default  org.jeasy.rules.api.Rule.DEFAULT_DESCRIPTION;
+    String description() default org.jeasy.rules.api.Rule.DEFAULT_DESCRIPTION;
 
     /**
      * The rule priority.
+     *
      * @return The rule priority
      */
     int priority() default org.jeasy.rules.api.Rule.DEFAULT_PRIORITY;
+
+    /**
+     * The rule threshold.
+     *
+     * @return The rule threshold
+     */
+    double threshold() default org.jeasy.rules.api.Rule.DEFAULT_THRESHOLD;
 
 }

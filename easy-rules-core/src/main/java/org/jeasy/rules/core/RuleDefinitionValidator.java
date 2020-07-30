@@ -23,7 +23,8 @@
  */
 package org.jeasy.rules.core;
 
-import static java.lang.String.format;
+import org.jeasy.rules.annotation.*;
+import org.jeasy.rules.api.Facts;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -31,12 +32,8 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
-import org.jeasy.rules.annotation.Action;
-import org.jeasy.rules.annotation.Condition;
-import org.jeasy.rules.annotation.Fact;
-import org.jeasy.rules.annotation.Priority;
-import org.jeasy.rules.annotation.Rule;
-import org.jeasy.rules.api.Facts;
+
+import static java.lang.String.format;
 
 /**
  * This component validates that an annotated rule object is well defined.
@@ -50,6 +47,7 @@ class RuleDefinitionValidator {
         checkConditionMethod(rule);
         checkActionMethods(rule);
         checkPriorityMethod(rule);
+        checkThresholdMethod(rule);
     }
 
     private void checkRuleClass(final Object rule) {
@@ -89,7 +87,6 @@ class RuleDefinitionValidator {
     }
 
     private void checkPriorityMethod(final Object rule) {
-
         List<Method> priorityMethods = getMethodsAnnotatedWith(Priority.class, rule);
 
         if (priorityMethods.isEmpty()) {
@@ -104,6 +101,24 @@ class RuleDefinitionValidator {
 
         if (!isPriorityMethodWellDefined(priorityMethod)) {
             throw new IllegalArgumentException(format("Priority method '%s' defined in rule '%s' must be public, have no parameters and return integer type.", priorityMethod, rule.getClass().getName()));
+        }
+    }
+
+    private void checkThresholdMethod(final Object rule) {
+        List<Method> thresholdMethods = getMethodsAnnotatedWith(Threshold.class, rule);
+
+        if (thresholdMethods.isEmpty()) {
+            return;
+        }
+
+        if (thresholdMethods.size() > 1) {
+            throw new IllegalArgumentException(format("Rule '%s' must have exactly one method annotated with '%s'", rule.getClass().getName(), Threshold.class.getName()));
+        }
+
+        Method thresholdMethod = thresholdMethods.get(0);
+
+        if (!isThresholdMethodWellDefined(thresholdMethod)) {
+            throw new IllegalArgumentException(format("Threshold method '%s' defined in rule '%s' must be public, have no parameters and return integer type.", thresholdMethod, rule.getClass().getName()));
         }
     }
 
@@ -163,6 +178,12 @@ class RuleDefinitionValidator {
     private boolean isPriorityMethodWellDefined(final Method method) {
         return Modifier.isPublic(method.getModifiers())
                 && method.getReturnType().equals(Integer.TYPE)
+                && method.getParameterTypes().length == 0;
+    }
+
+    private boolean isThresholdMethodWellDefined(final Method method) {
+        return Modifier.isPublic(method.getModifiers())
+                && method.getReturnType().equals(Double.TYPE)
                 && method.getParameterTypes().length == 0;
     }
 

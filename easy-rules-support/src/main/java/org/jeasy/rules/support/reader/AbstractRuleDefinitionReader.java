@@ -74,6 +74,9 @@ public abstract class AbstractRuleDefinitionReader implements RuleDefinitionRead
         Integer priority = (Integer) map.get("priority");
         ruleDefinition.setPriority(priority != null ? priority : Rule.DEFAULT_PRIORITY);
 
+        Double threshold = (Double) map.get("threshold");
+        ruleDefinition.setThreshold(threshold != null ? threshold : Rule.DEFAULT_THRESHOLD);
+
         String compositeRuleType = (String) map.get("compositeRuleType");
 
         String condition = (String) map.get("condition");

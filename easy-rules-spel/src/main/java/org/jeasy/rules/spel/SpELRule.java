@@ -28,7 +28,6 @@ import org.jeasy.rules.api.Condition;
 import org.jeasy.rules.api.Facts;
 import org.jeasy.rules.api.Rule;
 import org.jeasy.rules.core.BasicRule;
-
 import org.springframework.expression.BeanResolver;
 import org.springframework.expression.ParserContext;
 
@@ -36,16 +35,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A {@link Rule} implementation that uses 
+ * A {@link Rule} implementation that uses
  * <a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#expressions">SpEL</a>
  * to evaluate and execute the rule.
  *
  * @author Mahmoud Ben Hassine (mahmoud.benhassine@icloud.com)
  */
 public class SpELRule extends BasicRule {
-
-    private Condition condition = Condition.FALSE;
-    private final List<Action> actions = new ArrayList<>();
+    protected Condition condition = Condition.FALSE;
+    protected final List<Action> actions = new ArrayList<>();
     private final ParserContext parserContext;
     private BeanResolver beanResolver;
 
@@ -58,7 +56,7 @@ public class SpELRule extends BasicRule {
 
     /**
      * Create a new SpEL rule.
-     * 
+     *
      * @param parserContext used when parsing expressions
      */
     public SpELRule(ParserContext parserContext) {
@@ -81,7 +79,7 @@ public class SpELRule extends BasicRule {
      * Create a new SpEL rule.
      *
      * @param parserContext used when parsing expressions
-     * @param beanResolver used to resolve bean references in expressions
+     * @param beanResolver  used to resolve bean references in expressions
      */
     public SpELRule(ParserContext parserContext, BeanResolver beanResolver) {
         super(Rule.DEFAULT_NAME, Rule.DEFAULT_DESCRIPTION, Rule.DEFAULT_PRIORITY);
@@ -123,7 +121,19 @@ public class SpELRule extends BasicRule {
     }
 
     /**
+     * Set rule threshold.
+     *
+     * @param threshold of the rule
+     * @return this rule
+     */
+    public SpELRule threshold(double threshold) {
+        this.threshold = threshold;
+        return this;
+    }
+
+    /**
      * Specify the rule's condition as SpEL expression.
+     *
      * @param condition of the rule
      * @return this rule
      */
@@ -134,6 +144,7 @@ public class SpELRule extends BasicRule {
 
     /**
      * Add an action specified as an SpEL expression to the rule.
+     *
      * @param action to add to the rule
      * @return this rule
      */

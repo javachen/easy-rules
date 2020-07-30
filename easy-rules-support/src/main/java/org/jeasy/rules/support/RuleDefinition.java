@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * Rule definition as defined in a rule descriptor.
  * This class encapsulates the static definition of a {@link Rule}.
- *
+ * <p>
  * Rule definitions are produced by a {@code RuleDefinitionReader}s
  * and consumed by rule factories to create rules.
  *
@@ -42,6 +42,7 @@ public class RuleDefinition {
     private String name = Rule.DEFAULT_NAME;
     private String description = Rule.DEFAULT_DESCRIPTION;
     private int priority = Rule.DEFAULT_PRIORITY;
+    private double threshold = Rule.DEFAULT_THRESHOLD;
     private String condition;
     private List<String> actions = new ArrayList<>();
     private List<RuleDefinition> composingRules = new ArrayList<>();
@@ -77,6 +78,14 @@ public class RuleDefinition {
 
     public void setPriority(int priority) {
         this.priority = priority;
+    }
+
+    public double getThreshold() {
+        return threshold;
+    }
+
+    public void setThreshold(double threshold) {
+        this.threshold = threshold;
     }
 
     public List<String> getActions() {

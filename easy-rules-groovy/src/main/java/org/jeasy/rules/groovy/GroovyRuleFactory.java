@@ -75,6 +75,7 @@ public class GroovyRuleFactory extends AbstractRuleFactory {
                 .name(ruleDefinition.getName())
                 .description(ruleDefinition.getDescription())
                 .priority(ruleDefinition.getPriority())
+                .threshold(ruleDefinition.getThreshold())
                 .when(ruleDefinition.getCondition());
         for (String action : ruleDefinition.getActions()) {
             groovyRule.then(action);

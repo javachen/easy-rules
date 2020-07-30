@@ -40,9 +40,8 @@ import java.util.List;
  * @author Mahmoud Ben Hassine (mahmoud.benhassine@icloud.com)
  */
 public class MVELRule extends BasicRule {
-
-    private Condition condition = Condition.FALSE;
-    private final List<Action> actions = new ArrayList<>();
+    protected Condition condition = Condition.FALSE;
+    protected final List<Action> actions = new ArrayList<>();
     private final ParserContext parserContext;
 
     /**
@@ -54,7 +53,7 @@ public class MVELRule extends BasicRule {
 
     /**
      * Create a new MVEL rule.
-     * 
+     *
      * @param parserContext used to parse condition/action expressions
      */
     public MVELRule(ParserContext parserContext) {
@@ -96,7 +95,19 @@ public class MVELRule extends BasicRule {
     }
 
     /**
+     * Set rule threshold.
+     *
+     * @param threshold of the rule
+     * @return this rule
+     */
+    public MVELRule threshold(double threshold) {
+        this.threshold = threshold;
+        return this;
+    }
+
+    /**
      * Specify the rule's condition as MVEL expression.
+     *
      * @param condition of the rule
      * @return this rule
      */
@@ -107,6 +118,7 @@ public class MVELRule extends BasicRule {
 
     /**
      * Add an action specified as an MVEL expression to the rule.
+     *
      * @param action to add to the rule
      * @return this rule
      */

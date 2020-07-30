@@ -35,7 +35,6 @@ public interface Condition {
      * Evaluate the condition according to the known facts.
      *
      * @param facts known when evaluating the rule.
-     *
      * @return true if the rule should be triggered, false otherwise
      */
     boolean evaluate(Facts facts);

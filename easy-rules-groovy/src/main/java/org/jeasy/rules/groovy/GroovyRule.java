@@ -23,8 +23,6 @@
  */
 package org.jeasy.rules.groovy;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.jeasy.rules.api.Action;
 import org.jeasy.rules.api.Condition;
@@ -32,16 +30,18 @@ import org.jeasy.rules.api.Facts;
 import org.jeasy.rules.api.Rule;
 import org.jeasy.rules.core.BasicRule;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A {@link org.jeasy.rules.api.Rule} implementation that uses <a href="https://github.com/apache/groovy">Groovy</a> to evaluate and execute the rule.
  *
  * @author Medina Computama <medina.computama@gmail.com>
  */
 public class GroovyRule extends BasicRule {
+    protected Condition condition = Condition.FALSE;
+    protected final List<Action> actions = new ArrayList<>();
 
-    private Condition condition = Condition.FALSE;
-    private List<Action> actions = new ArrayList<>();
-    
     /**
      * Create a new Groovy rule.
      */
@@ -83,7 +83,19 @@ public class GroovyRule extends BasicRule {
     }
 
     /**
+     * Set rule threshold.
+     *
+     * @param threshold of the rule
+     * @return this rule
+     */
+    public GroovyRule threshold(double threshold) {
+        this.threshold = threshold;
+        return this;
+    }
+
+    /**
      * Specify the rule's condition as Groovy expression.
+     *
      * @param condition of the rule
      * @return this rule
      */
@@ -93,17 +105,20 @@ public class GroovyRule extends BasicRule {
 
     /**
      * Specify the rule's condition as Groovy expression.
-     * @param condition of the rule
+     *
+     * @param condition     of the rule
      * @param parserContext the Groovy parser context
      * @return this rule
      */
     public GroovyRule when(String condition, CompilerConfiguration parserContext) {
+        this.expression = condition;
         this.condition = new GroovyCondition(condition, parserContext);
         return this;
     }
 
     /**
      * Add an action specified as an Groovy expression to the rule.
+     *
      * @param action to add to the rule
      * @return this rule
      */
@@ -113,7 +128,8 @@ public class GroovyRule extends BasicRule {
 
     /**
      * Add an action specified as an Groovy expression to the rule.
-     * @param action to add to the rule
+     *
+     * @param action        to add to the rule
      * @param parserContext the Groovy parser context
      * @return this rule
      */
@@ -133,5 +149,4 @@ public class GroovyRule extends BasicRule {
             action.execute(facts);
         }
     }
-    
 }

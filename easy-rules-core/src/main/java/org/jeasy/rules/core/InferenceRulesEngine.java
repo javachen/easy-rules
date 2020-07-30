@@ -23,6 +23,7 @@
  */
 package org.jeasy.rules.core;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jeasy.rules.api.Facts;
 import org.jeasy.rules.api.Rule;
 import org.jeasy.rules.api.RuleListener;
@@ -47,10 +48,8 @@ import java.util.TreeSet;
  *
  * @author Mahmoud Ben Hassine (mahmoud.benhassine@icloud.com)
  */
+@Slf4j
 public final class InferenceRulesEngine extends AbstractRulesEngine {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(InferenceRulesEngine.class);
-
     private final DefaultRulesEngine delegate;
 
     /**
@@ -71,17 +70,18 @@ public final class InferenceRulesEngine extends AbstractRulesEngine {
     }
 
     @Override
-    public void fire(Rules rules, Facts facts) {
-        Set<Rule> selectedRules;
-        do {
-            LOGGER.debug("Selecting candidate rules based on the following facts: {}", facts);
-            selectedRules = selectCandidates(rules, facts);
-            if (!selectedRules.isEmpty()) {
-                delegate.fire(new Rules(selectedRules), facts);
-            } else {
-                LOGGER.debug("No candidate rules found for facts: {}", facts);
-            }
-        } while (!selectedRules.isEmpty());
+    public Boolean fire(Rules rules, Facts facts) {
+        return true;
+//        Set<Rule> selectedRules;
+//        do {
+//            log.debug("Selecting candidate rules based on the following facts: {}", facts);
+//            selectedRules = selectCandidates(rules, facts);
+//            if (!selectedRules.isEmpty()) {
+//                delegate.fire(new Rules(selectedRules), facts);
+//            } else {
+//                log.debug("No candidate rules found for facts: {}", facts);
+//            }
+//        } while (!selectedRules.isEmpty());
     }
 
     private Set<Rule> selectCandidates(Rules rules, Facts facts) {
